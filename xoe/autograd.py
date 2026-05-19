@@ -10,5 +10,6 @@ def backward(loss_fn, params, *args):
         return loss_fn(*args)._data
 
     grads = jax.grad(pure_loss)(param_arrays)
-    for p, g in zip(params, grads):
+    for p, orig, g in zip(params, param_arrays, grads):
+        p._data = orig  # ← restore
         p.grad = Tensor(g)

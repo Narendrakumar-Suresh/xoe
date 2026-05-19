@@ -17,12 +17,10 @@ def seed(n):
 
 
 def randn(shape):
-    return Tensor(jax.random.normal(next_key(), shape))
-
+    return jax.random.normal(next_key(), shape)  # raw array
 
 def zeros(shape):
-    return Tensor(jnp.zeros(shape))
-
+    return jnp.zeros(shape)  # raw array
 
 def ones(shape):
-    return Tensor(jnp.ones(shape))
+    return jnp.ones(shape)  # raw array
