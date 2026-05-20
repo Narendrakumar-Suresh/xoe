@@ -1,5 +1,3 @@
-from xoe.nn.module import Module
-
 class SGD:
     def __init__(self, params, lr=0.01):
         self.params = params

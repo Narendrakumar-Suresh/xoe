@@ -1,5 +1,6 @@
 import jax
-from xoe.tensor import Tensor
+from xoe import Tensor
+
 
 def backward(loss_fn, params, *args):
     param_arrays = [p._data for p in params]

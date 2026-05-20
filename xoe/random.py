@@ -16,11 +16,22 @@ def seed(n):
     _key = jax.random.PRNGKey(n)
 
 
-def randn(shape):
-    return jax.random.normal(next_key(), shape)  # raw array
+from xoe.tensor import get_default_dtype
 
-def zeros(shape):
-    return jnp.zeros(shape)  # raw array
 
-def ones(shape):
-    return jnp.ones(shape)  # raw array
+def randn(shape, dtype=None):
+    if dtype is None:
+        dtype = get_default_dtype()
+    return jax.random.normal(next_key(), shape, dtype=dtype)  # raw array
+
+
+def zeros(shape, dtype=None):
+    if dtype is None:
+        dtype = get_default_dtype()
+    return jnp.zeros(shape, dtype=dtype)  # raw array
+
+
+def ones(shape, dtype=None):
+    if dtype is None:
+        dtype = get_default_dtype()
+    return jnp.ones(shape, dtype=dtype)  # raw array

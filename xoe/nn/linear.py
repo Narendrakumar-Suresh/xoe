@@ -4,10 +4,16 @@ from xoe import random
 
 
 class Linear(Module):
-    def __init__(self, in_features: int, out_features: int, bias: bool = True):
-        self.W = Tensor(random.randn((in_features, out_features)), requires_grad=True)
+    def __init__(
+        self, in_features: int, out_features: int, bias: bool = True, dtype=None
+    ):
+        self.W = Tensor(
+            random.randn((in_features, out_features), dtype=dtype), requires_grad=True
+        )
         self.b = (
-            Tensor(random.zeros((out_features,)), requires_grad=True) if bias else None
+            Tensor(random.zeros((out_features,), dtype=dtype), requires_grad=True)
+            if bias
+            else None
         )
 
     def forward(self, x: Tensor) -> Tensor:
@@ -15,4 +21,3 @@ class Linear(Module):
         if self.b is not None:
             out = out + self.b
         return out
-    
