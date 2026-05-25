@@ -1,11 +1,10 @@
 from xoe.tensor import Tensor
-from xoe.nn.module import Module
 
-class MSELoss(Module):
+class MSELoss:
     def __init__(self, reduction="mean"):
         self.reduction = reduction
 
-    def forward(self, pred: Tensor, target: Tensor):
+    def __call__(self, pred: Tensor, target: Tensor):
         diff = pred - target
         squared_diff = diff * diff
 
