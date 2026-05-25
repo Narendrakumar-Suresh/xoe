@@ -1,9 +1,3 @@
-import jax.numpy as jnp
-import jax
-import math
-from xoe.tensor import Tensor
-from xoe.random import next_key
-
 from xoe.nn.linear import Linear
 from xoe.nn.module import Module
 from xoe.nn.sequential import Sequential
