@@ -12,15 +12,15 @@ This document tracks the long-term roadmap for the **xoe** deep learning framewo
 - [x] **State Dicts**: Flat-dict `state_dict()` and `load_state_dict()` for `safetensors` compatibility.
 
 ## 🟡 Phase 2: Feature Parity (Next Steps)
-- [ ] **Loss Functions**: 
+- [x] **Loss Functions**: 
     - `MSELoss`
     - `CrossEntropyLoss` (with log-sum-exp trick for stability)
-- [ ] **Advanced Layers**:
+- [x] **Advanced Layers**:
     - `Sequential` container
     - `Dropout`
     - `LayerNorm` / `BatchNorm1d`
-- [ ] **Activations**: Add `GELU`, `LeakyReLU`, and `Softmax`.
-- [ ] **Initialization**: Kaiming (He) and Xavier (Glorot) init strategies.
+- [x] **Activations**: Add `GELU`, `LeakyReLU`, and `Softmax`.
+- [x] **Initialization**: Kaiming (He) and Xavier (Glorot) init strategies.
 
 ## 🟠 Phase 3: Performance & Serialization
 - [ ] **Safetensors Integration**: Official `save` and `load` utilities.

@@ -1,6 +1,5 @@
 import jax.numpy as jnp
 
-
 class Adam:
     def __init__(self, params, lr=0.001, betas=(0.9, 0.999), eps=1e-8):
         self.params = params
@@ -48,7 +47,6 @@ class AdamW:
         b1, b2 = self.betas
         for i, p in enumerate(self.params):
             if p.grad is not None:
-                # Decoupled weight decay
                 p._data = p._data - self.lr * self.weight_decay * p._data
 
                 g = p.grad._data
