@@ -11,3 +11,5 @@ wheels/
 .antigravitycli
 .ruff_cache
 .pytest_cache
+*node_modules
+*vitepress

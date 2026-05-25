@@ -1,12 +1,11 @@
 import jax.numpy as jnp
 from xoe.tensor import Tensor
-from xoe.nn.module import Module
 
-class CrossEntropyLoss(Module):
+class CrossEntropyLoss:
     def __init__(self, reduction="mean"):
         self.reduction = reduction
 
-    def forward(self, logits: Tensor, targets: Tensor) -> Tensor:
+    def __call__(self, logits: Tensor, targets: Tensor) -> Tensor:
         logits_max = jnp.max(logits._data, axis=-1, keepdims=True)
         shifted_logits = logits._data - logits_max
         
