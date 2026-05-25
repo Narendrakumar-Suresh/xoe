@@ -3,6 +3,7 @@ from xoe.tensor import Tensor
 from xoe.nn.module import Module
 from xoe.random import next_key
 
+
 class Dropout(Module):
     def __init__(self, p=0.5):
         self.p = p

@@ -23,11 +23,11 @@ optimizer = AdamW(model.parameters(), lr=1e-3)
 # training loop
 for step in range(20):
     optimizer.zero_grad()
-    
+
     def loss_fn(x):
         return criterion(model(x), y)
-    
+
     backward(loss_fn, model.parameters(), x)
     optimizer.step()
-    
+
     print(f"step {step:02d} | loss: {loss_fn(x)}")

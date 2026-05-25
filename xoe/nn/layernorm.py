@@ -2,6 +2,7 @@ import jax.numpy as jnp
 from xoe.tensor import Tensor
 from xoe.nn.module import Module
 
+
 class LayerNorm(Module):
     def __init__(self, normalized_shape, eps=1e-5):
         if isinstance(normalized_shape, int):

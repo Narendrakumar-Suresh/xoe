@@ -16,9 +16,11 @@ bf16 = bfloat16
 i32 = int32
 i16 = int16
 
+
 def set_default_dtype(dtype):
     global _default_dtype
     _default_dtype = dtype
+
 
 def get_default_dtype():
     return _default_dtype
@@ -53,20 +55,33 @@ class Tensor:
         return Tensor(self._data.reshape(shape), requires_grad=self.requires_grad)
 
     def squeeze(self, axis=None):
-        return Tensor(jnp.squeeze(self._data, axis=axis), requires_grad=self.requires_grad)
+        return Tensor(
+            jnp.squeeze(self._data, axis=axis), requires_grad=self.requires_grad
+        )
 
     def unsqueeze(self, axis):
-        return Tensor(jnp.expand_dims(self._data, axis=axis), requires_grad=self.requires_grad)
+        return Tensor(
+            jnp.expand_dims(self._data, axis=axis), requires_grad=self.requires_grad
+        )
 
     # Reductions
     def sum(self, axis=None, keepdims=False):
-        return Tensor(jnp.sum(self._data, axis=axis, keepdims=keepdims), requires_grad=self.requires_grad)
+        return Tensor(
+            jnp.sum(self._data, axis=axis, keepdims=keepdims),
+            requires_grad=self.requires_grad,
+        )
 
     def mean(self, axis=None, keepdims=False):
-        return Tensor(jnp.mean(self._data, axis=axis, keepdims=keepdims), requires_grad=self.requires_grad)
+        return Tensor(
+            jnp.mean(self._data, axis=axis, keepdims=keepdims),
+            requires_grad=self.requires_grad,
+        )
 
     def max(self, axis=None, keepdims=False):
-        return Tensor(jnp.max(self._data, axis=axis, keepdims=keepdims), requires_grad=self.requires_grad)
+        return Tensor(
+            jnp.max(self._data, axis=axis, keepdims=keepdims),
+            requires_grad=self.requires_grad,
+        )
 
     # Indexing
     def __getitem__(self, idx):
@@ -122,7 +137,7 @@ class Tensor:
         return Tensor(other_data @ self._data, requires_grad=self.requires_grad)
 
     def __pow__(self, power):
-        return Tensor(self._data ** power, requires_grad=self.requires_grad)
+        return Tensor(self._data**power, requires_grad=self.requires_grad)
 
     def __neg__(self):
         return Tensor(-self._data, requires_grad=self.requires_grad)

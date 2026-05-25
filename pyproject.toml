@@ -1,17 +1,23 @@
 [project]
 name = "xoe"
 version = "0.1.0"
-description = "Add your description here"
+description = "Xoe - Write PyTorch. Run JAX."
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.11"
 dependencies = [
     "jax>=0.10.0",
-    "pyrefly>=1.0.0",
+    "jaxlib>=0.10.0",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
     "ruff>=0.15.13",
-    "ty>=0.0.37",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.urls]
+Homepage = "https://github.com/Narendrakumar-Suresh/xoe"

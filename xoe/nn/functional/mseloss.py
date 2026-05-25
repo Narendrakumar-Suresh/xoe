@@ -1,5 +1,6 @@
 from xoe.tensor import Tensor
 
+
 class MSELoss:
     def __init__(self, reduction="mean"):
         self.reduction = reduction
