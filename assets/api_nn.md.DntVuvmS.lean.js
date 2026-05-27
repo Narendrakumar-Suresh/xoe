@@ -1,1 +1,0 @@
-import{_ as i,I as a,f as t,i as e}from"./chunks/framework.Lrd_qS6S.js";const g=JSON.parse('{"title":"nn","description":"","frontmatter":{},"headers":[],"relativePath":"api/nn.md","filePath":"api/nn.md"}'),n={name:"api/nn.md"};function h(l,s,k,p,r,d){return a(),t("div",null,[...s[0]||(s[0]=[e("",33)])])}const E=i(n,[["render",h]]);export{g as __pageData,E as default};

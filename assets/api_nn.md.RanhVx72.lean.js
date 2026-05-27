@@ -1,0 +1,1 @@
+import{_ as i,I as a,f as t,i as e}from"./chunks/framework.TjtuIZh8.js";const g=JSON.parse('{"title":"nn API","description":"","frontmatter":{},"headers":[],"relativePath":"api/nn.md","filePath":"api/nn.md"}'),n={name:"api/nn.md"};function h(l,s,d,k,p,r){return a(),t("div",null,[...s[0]||(s[0]=[e("",71)])])}const E=i(n,[["render",h]]);export{g as __pageData,E as default};

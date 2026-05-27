@@ -1,1 +1,0 @@
-import{_ as s,I as a,f as t,i as e}from"./chunks/framework.Lrd_qS6S.js";const g=JSON.parse('{"title":"Optim","description":"","frontmatter":{},"headers":[],"relativePath":"api/optim.md","filePath":"api/optim.md"}'),h={name:"api/optim.md"};function d(n,i,l,p,k,r){return a(),t("div",null,[...i[0]||(i[0]=[e("",17)])])}const c=s(h,[["render",d]]);export{g as __pageData,c as default};
