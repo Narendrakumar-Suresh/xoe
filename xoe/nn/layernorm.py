@@ -11,13 +11,13 @@ class LayerNorm(Module):
             normalized_shape = tuple(normalized_shape)
         self.normalized_shape = normalized_shape
         self.eps = eps
-        self.weight = Tensor(jnp.ones(normalized_shape), requires_grad=True)
-        self.bias = Tensor(jnp.zeros(normalized_shape), requires_grad=True)
+        self.weight = Tensor(jnp.ones(normalized_shape))
+        self.bias = Tensor(jnp.zeros(normalized_shape))
 
     def forward(self, x: Tensor) -> Tensor:
         dims = tuple(range(-len(self.normalized_shape), 0))
-        mean = x._data.mean(axis=dims, keepdims=True)
-        var = x._data.var(axis=dims, keepdims=True)
-        x_hat = (x._data - mean) / jnp.sqrt(var + self.eps)
-        out = x_hat * self.weight._data + self.bias._data
-        return Tensor(out)
+        mean = x.data.mean(axis=dims, keepdims=True)
+        var = x.data.var(axis=dims, keepdims=True)
+        x_hat = (x.data - mean) / jnp.sqrt(var + self.eps)
+        out = x_hat * self.weight.data + self.bias.data
+        return Tensor._wrap(out)

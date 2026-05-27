@@ -2,19 +2,22 @@ import jax
 from xoe.tensor import Tensor
 
 
-def backward(loss_fn, params, *args):
-    param_arrays = [p._data for p in params]
+def backward(loss_fn, params, *args, **kwargs):
+    saved = [(p, p.data) for p in params]
+    param_arrays = [p.data for p in params]
 
-    def pure_loss(param_arrays):
-        for p, val in zip(params, param_arrays):
-            p._data = val
-        loss_val = loss_fn(*args)
-        if isinstance(loss_val, Tensor):
-            return loss_val._data
-        return loss_val
+    def pure_loss(flat_params):
+        for p, val in zip(params, flat_params):
+            p.data = val
+        result = loss_fn(*args, **kwargs)
+        if isinstance(result, Tensor):
+            return result.data
+        return result
 
-    grads = jax.grad(pure_loss)(param_arrays)
+    try:
+        loss_val, grads = jax.value_and_grad(pure_loss)(param_arrays)
+    finally:
+        for p, orig in saved:
+            p.data = orig
 
-    for p, orig, g in zip(params, param_arrays, grads):
-        p._data = orig
-        p.grad = Tensor(g)
+    return Tensor._wrap(loss_val), grads

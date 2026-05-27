@@ -6,23 +6,22 @@ from xoe.random import next_key
 
 
 def zeros_(tensor: Tensor):
-    tensor._data = jnp.zeros_like(tensor._data)
+    tensor.data = jnp.zeros_like(tensor.data)
     return tensor
 
 
 def ones_(tensor: Tensor):
-    tensor._data = jnp.ones_like(tensor._data)
+    tensor.data = jnp.ones_like(tensor.data)
     return tensor
 
 
 def constant_(tensor: Tensor, val):
-    tensor._data = jnp.full_like(tensor._data, val)
+    tensor.data = jnp.full_like(tensor.data, val)
     return tensor
 
 
-def kaiming_uniform_(tensor: Tensor, a=0, mode="fan_in", nonlinearity="leaky_relu"):
-    # Determine fan
-    shape = tensor._data.shape
+def kaiming_uniform_(tensor: Tensor, a=0, nonlinearity="leaky_relu", key=None):
+    shape = tensor.data.shape
     if len(shape) >= 2:
         fan_in = shape[0]
     else:
@@ -39,15 +38,15 @@ def kaiming_uniform_(tensor: Tensor, a=0, mode="fan_in", nonlinearity="leaky_rel
 
     std = gain / math.sqrt(fan_in)
     bound = math.sqrt(3.0) * std
-    key = next_key()
-    tensor._data = jax.random.uniform(
-        key, shape=shape, minval=-bound, maxval=bound, dtype=tensor.dtype
+    k = next_key(key)
+    tensor.data = jax.random.uniform(
+        k, shape=shape, minval=-bound, maxval=bound, dtype=tensor.dtype
     )
     return tensor
 
 
-def xavier_uniform_(tensor: Tensor, gain=1.0):
-    shape = tensor._data.shape
+def xavier_uniform_(tensor: Tensor, gain=1.0, key=None):
+    shape = tensor.data.shape
     if len(shape) >= 2:
         fan_in, fan_out = shape[0], shape[1]
     else:
@@ -56,8 +55,8 @@ def xavier_uniform_(tensor: Tensor, gain=1.0):
 
     std = gain * math.sqrt(2.0 / (fan_in + fan_out))
     bound = math.sqrt(3.0) * std
-    key = next_key()
-    tensor._data = jax.random.uniform(
-        key, shape=shape, minval=-bound, maxval=bound, dtype=tensor.dtype
+    k = next_key(key)
+    tensor.data = jax.random.uniform(
+        k, shape=shape, minval=-bound, maxval=bound, dtype=tensor.dtype
     )
     return tensor

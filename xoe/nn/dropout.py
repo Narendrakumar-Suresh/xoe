@@ -7,12 +7,11 @@ from xoe.random import next_key
 class Dropout(Module):
     def __init__(self, p=0.5):
         self.p = p
-        self.training = True
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: Tensor, key=None) -> Tensor:
         if not self.training or self.p == 0.0:
             return x
-        key = next_key()
-        mask = jax.random.bernoulli(key, p=1.0 - self.p, shape=x._data.shape)
-        out = (x._data * mask) / (1.0 - self.p)
-        return Tensor(out)
+        k = key if key is not None else next_key()
+        mask = jax.random.bernoulli(k, p=1.0 - self.p, shape=x.data.shape)
+        out = (x.data * mask) / (1.0 - self.p)
+        return Tensor._wrap(out)
