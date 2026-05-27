@@ -6,9 +6,9 @@ The goal is to expose JAX power through a simpler, more intuitive, PyTorch-like 
 ## Phase 1: Foundation & Core API (Complete)
 - [x] **Core Tensor Class**: Thin jax.Array wrapper with ergonomic dunders, pytree registration
 - [x] **Module System**: PyTorch-like Module with parameter discovery, state dicts
-- [x] **Autograd Bridge**: Imperative wrapper using `jax.value_and_grad`
+- [x] **Autograd Bridge**: Imperative wrapper using `jax.grad` — stores gradients on `param.grad`
 - [x] **Basic Layers**: Linear layer
-- [x] **Optimizers**: SGD, Adam, AdamW (functional step API)
+- [x] **Optimizers**: SGD, Adam, AdamW (stateful step/zero_grad API)
 - [x] **State Dicts**: Flat-dict save/load with safetensors support
 - [x] **JIT Compilation**: `@xoe.jit` decorator wrapping `jax.jit`
 

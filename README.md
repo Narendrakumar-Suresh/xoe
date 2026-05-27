@@ -29,8 +29,10 @@ optimizer = AdamW(model.parameters(), lr=1e-3)
 
 for step in range(20):
     optimizer.zero_grad()
+
     def loss_fn(x):
         return criterion(model(x), y)
+
     backward(loss_fn, model.parameters(), x)
     optimizer.step()
 ```
@@ -45,14 +47,15 @@ Requires a JAX backend: `jax[cpu]`, `jax[cuda]`, or `jax[tpu]`.
 
 ## Features
 
-- **Tensor** -- JAX-backed array with PyTorch-style operators (+, -, *, /, @, **, .T, .reshape, .squeeze, .unsqueeze, reductions, exp/log/tanh, indexing)
-- **Autograd** -- `backward(loss_fn, params, *args)` using JAX's `grad` under the hood
-- **nn** -- Linear, Sequential, Dropout, LayerNorm, ReLU, Sigmoid, Softmax, GELU, MSELoss, CrossEntropyLoss
-- **Optim** -- SGD, Adam, AdamW
-- **Random** -- seed, randn, zeros, ones, next_key (global PRNG key management)
-- **Module** -- parameters(), state_dict(), load_state_dict(), zero_grad()
-- **Init** -- zeros\_, ones\_, constant\_, kaiming_uniform\_, xavier_uniform\_
-- **JIT** -- `@xoe.jit` decorator for XLA compilation
+- **Tensor** — JAX-backed array with PyTorch-style operators (`+`, `-`, `*`, `/`, `@`, `**`, `.T`, `.reshape`, `.squeeze`, `.unsqueeze`, reductions, `exp`/`log`/`tanh`, indexing, `.grad` tracking)
+- **Autograd** — `backward(loss_fn, params, *args)` using JAX's `grad` under the hood. Stores gradients on `param.grad`.
+- **nn** — `Linear`, `Sequential`, `Dropout`, `LayerNorm`, `BatchNorm1d`, `Embedding`, `ReLU`, `Sigmoid`, `Softmax`, `GELU`, `MSELoss`, `CrossEntropyLoss`
+- **Optim** — `SGD`, `Adam`, `AdamW` with `.step()` and `.zero_grad()`
+- **Module** — `parameters()`, `state_dict()`, `load_state_dict()`, `train()`, `eval()`
+- **Init** — `zeros_`, `ones_`, `constant_`, `kaiming_uniform_`, `xavier_uniform_`
+- **Random** — `seed`, `randn`, `zeros`, `ones`, `next_key` (global PRNG key management)
+- **JIT** — `@xoe.jit` decorator for XLA compilation
+- **SafeTensors** — save/load model weights with `save_as_safetensor` / `load_from_safetensor`
 
 ## Docs
 

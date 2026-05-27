@@ -212,12 +212,11 @@ class TestAutograd:
         def loss_fn(x):
             return (w * x + b).sum()
 
-        loss, grads = backward(loss_fn, params, Tensor([3.0]))
-        assert isinstance(loss, Tensor)
-        assert loss.shape == ()
-        assert len(grads) == 2
-        assert grads[0].shape == (1, 1)
-        assert grads[1].shape == (1,)
+        backward(loss_fn, params, Tensor([3.0]))
+        assert isinstance(w.grad, Tensor)
+        assert w.grad.shape == (1, 1)
+        assert isinstance(b.grad, Tensor)
+        assert b.grad.shape == (1,)
 
     def test_backward_multiple_params(self):
         w1 = Tensor([[1.0, 2.0], [3.0, 4.0]])
@@ -233,10 +232,9 @@ class TestAutograd:
             return y.sum()
 
         x = Tensor([[1.0, 2.0]])
-        loss, grads = backward(loss_fn, params, x)
-        assert len(grads) == 4
-        for g in grads:
-            assert isinstance(g, jnp.ndarray)
+        backward(loss_fn, params, x)
+        for p in params:
+            assert isinstance(p.grad, Tensor)
 
     def test_backward_no_tensor_result(self):
         w = Tensor([[1.0]])
@@ -245,8 +243,8 @@ class TestAutograd:
         def loss_fn(x):
             return float((w * x).sum().item())
 
-        loss, grads = backward(loss_fn, params, Tensor([2.0]))
-        assert isinstance(loss, Tensor)
+        backward(loss_fn, params, Tensor([2.0]))
+        assert isinstance(w.grad, Tensor)
 
     def test_backward_preserves_params(self):
         w = Tensor([[1.0]])
@@ -588,24 +586,18 @@ class TestOptimizers:
         params = [w]
         opt = SGD(params, lr=0.1)
         init_w = w.data.copy()
-        grads = [jnp.array([[2.0]])]
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        w.grad = Tensor._wrap(jnp.array([[2.0]]))
+        opt.step()
         assert w.data[0, 0] < init_w[0, 0]  # weight decreased
 
     def test_sgd_momentum(self):
         w = Tensor([[1.0]])
         params = [w]
         opt = SGD(params, lr=0.1, momentum=0.9)
-        grads = [jnp.array([[2.0]])]
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        w.grad = Tensor._wrap(jnp.array([[2.0]]))
+        opt.step()
         init_w = w.data.copy()
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        opt.step()
         assert w.data[0, 0] < init_w[0, 0]
 
     def test_sgd_weight_decay(self):
@@ -613,10 +605,8 @@ class TestOptimizers:
         params = [w]
         opt = SGD(params, lr=0.01, weight_decay=0.1)
         init_w = w.data.copy()
-        grads = [jnp.array([[0.0]])]
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        w.grad = Tensor._wrap(jnp.array([[0.0]]))
+        opt.step()
         assert w.data[0, 0] < init_w[0, 0]  # weight decay reduces even with zero grad
 
     def test_adam_step(self):
@@ -624,10 +614,8 @@ class TestOptimizers:
         params = [w]
         opt = Adam(params, lr=0.1)
         init_w = w.data.copy()
-        grads = [jnp.array([[2.0]])]
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        w.grad = Tensor._wrap(jnp.array([[2.0]]))
+        opt.step()
         assert w.data[0, 0] < init_w[0, 0]
 
     def test_adamw_step(self):
@@ -635,20 +623,16 @@ class TestOptimizers:
         params = [w]
         opt = AdamW(params, lr=0.1)
         init_w = w.data.copy()
-        grads = [jnp.array([[2.0]])]
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        w.grad = Tensor._wrap(jnp.array([[2.0]]))
+        opt.step()
         assert w.data[0, 0] < init_w[0, 0]
 
     def test_adam_amsgrad(self):
         w = Tensor([[1.0]])
         params = [w]
         opt = Adam(params, lr=0.1, amsgrad=True)
-        grads = [jnp.array([[2.0]])]
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        w.grad = Tensor._wrap(jnp.array([[2.0]]))
+        opt.step()
         assert isinstance(w.data, jnp.ndarray)
 
     def test_optimizer_full_training_loop(self):
@@ -662,20 +646,18 @@ class TestOptimizers:
             return MSELoss()(model(x), y)
 
         for _ in range(10):
-            loss, grads = backward(loss_fn, params, x)
-            new_data = opt.step([p.data for p in params], grads)
-            for p, nd in zip(params, new_data):
-                p.data = nd
+            opt.zero_grad()
+            backward(loss_fn, params, x)
+            opt.step()
 
     def test_multiple_param_groups_inplace(self):
         w1 = Tensor([[1.0]])
         w2 = Tensor([[2.0]])
         params = [w1, w2]
         opt = Adam(params, lr=0.01)
-        grads = [jnp.array([[0.5]]), jnp.array([[0.3]])]
-        new_data = opt.step([p.data for p in params], grads)
-        for p, nd in zip(params, new_data):
-            p.data = nd
+        w1.grad = Tensor._wrap(jnp.array([[0.5]]))
+        w2.grad = Tensor._wrap(jnp.array([[0.3]]))
+        opt.step()
         assert w1.data[0, 0] < 1.0
         assert w2.data[0, 0] < 2.0
 
@@ -855,11 +837,10 @@ class TestIntegration:
 
         losses = []
         for _ in range(20):
-            loss, grads = backward(loss_fn, params, x)
-            new_data = optimizer.step([p.data for p in params], grads)
-            for p, nd in zip(params, new_data):
-                p.data = nd
-            losses.append(loss.item())
+            optimizer.zero_grad()
+            backward(loss_fn, params, x)
+            optimizer.step()
+            losses.append(loss_fn(x).item())
         assert losses[-1] < losses[0]
 
     def test_grad_flow_through_all_layers(self):
@@ -874,6 +855,6 @@ class TestIntegration:
         def loss_fn(x):
             return model(x).sum()
 
-        loss, grads = backward(loss_fn, params, x)
-        assert len(grads) == len(params)
-        assert all(g is not None for g in grads)
+        backward(loss_fn, params, x)
+        for p in params:
+            assert isinstance(p.grad, Tensor)

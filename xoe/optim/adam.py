@@ -10,21 +10,22 @@ class Adam:
         eps=1e-8,
         amsgrad=False,
     ):
+        self.params = list(params)
         self.lr = lr
         self.betas = betas
         self.eps = eps
         self.amsgrad = amsgrad
         self.t = 0
-        self.m = [jnp.zeros_like(p.data) for p in params]
-        self.v = [jnp.zeros_like(p.data) for p in params]
-        self.v_max = [jnp.zeros_like(p.data) for p in params] if amsgrad else None
+        self.m = [jnp.zeros_like(p.data) for p in self.params]
+        self.v = [jnp.zeros_like(p.data) for p in self.params]
+        self.v_max = [jnp.zeros_like(p.data) for p in self.params] if amsgrad else None
 
-    def step(self, params_data, grads):
+    def step(self):
         self.t += 1
         b1, b2 = self.betas
-        new_params = []
-        for i, p in enumerate(params_data):
-            g = grads[i]
+        for i, p in enumerate(self.params):
+            g = p.grad.data
+            data = p.data
             self.m[i] = b1 * self.m[i] + (1 - b1) * g
             self.v[i] = b2 * self.v[i] + (1 - b2) * (g**2)
 
@@ -35,8 +36,11 @@ class Adam:
                 denom = jnp.sqrt(self.v[i]) + self.eps
 
             m_hat = self.m[i] / (1 - b1**self.t)
-            new_params.append(p - self.lr * m_hat / denom)
-        return new_params
+            p.data = data - self.lr * m_hat / denom
+
+    def zero_grad(self):
+        for p in self.params:
+            p.grad = None
 
 
 class AdamW:
@@ -49,22 +53,23 @@ class AdamW:
         weight_decay=0.01,
         amsgrad=False,
     ):
+        self.params = list(params)
         self.lr = lr
         self.betas = betas
         self.eps = eps
         self.weight_decay = weight_decay
         self.amsgrad = amsgrad
         self.t = 0
-        self.m = [jnp.zeros_like(p.data) for p in params]
-        self.v = [jnp.zeros_like(p.data) for p in params]
-        self.v_max = [jnp.zeros_like(p.data) for p in params] if amsgrad else None
+        self.m = [jnp.zeros_like(p.data) for p in self.params]
+        self.v = [jnp.zeros_like(p.data) for p in self.params]
+        self.v_max = [jnp.zeros_like(p.data) for p in self.params] if amsgrad else None
 
-    def step(self, params_data, grads):
+    def step(self):
         self.t += 1
         b1, b2 = self.betas
-        new_params = []
-        for i, p in enumerate(params_data):
-            g = grads[i]
+        for i, p in enumerate(self.params):
+            g = p.grad.data
+            data = p.data
             self.m[i] = b1 * self.m[i] + (1 - b1) * g
             self.v[i] = b2 * self.v[i] + (1 - b2) * (g**2)
 
@@ -75,7 +80,10 @@ class AdamW:
                 denom = jnp.sqrt(self.v[i]) + self.eps
 
             m_hat = self.m[i] / (1 - b1**self.t)
-            p_new = p - self.lr * m_hat / denom
+            p_new = data - self.lr * m_hat / denom
             p_new = p_new - self.lr * self.weight_decay * p_new
-            new_params.append(p_new)
-        return new_params
+            p.data = p_new
+
+    def zero_grad(self):
+        for p in self.params:
+            p.grad = None

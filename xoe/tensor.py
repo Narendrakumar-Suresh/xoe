@@ -34,6 +34,7 @@ class Tensor:
                 self._data = jnp.array(data, dtype=float32)
         else:
             self._data = jnp.array(data, dtype=dtype)
+        self.grad = None
 
     @property
     def dtype(self):

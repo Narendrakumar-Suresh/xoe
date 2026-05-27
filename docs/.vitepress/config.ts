@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'xoe',
   description: 'Write PyTorch. Run JAX.',
-
+  base: '/xoe/',
   themeConfig: {
     logo: '/logo.png',
     siteTitle: false,
